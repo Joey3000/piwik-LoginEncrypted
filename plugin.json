@@ -1,0 +1,19 @@
+{
+    "name": "LoginEncrypted",
+    "version": "1.0.0",
+    "description": "Encrypts users' passwords when transmitted from browser to the Piwik server on login. Useful when no HTTPS is possible.",
+    "theme": false,
+    "keywords": ["login", "authentication", "password", "encryption", "RSA", "https", "ssl", "tls"],
+    "license": "GPL v3+",
+    "homepage": "https://github.com/Joey3000/piwik-LoginEncrypted",
+    "require": {
+        "piwik": ">=2.14.3"
+    },
+    "authors": [
+        {
+            "name": "Joey3000",
+            "email": "",
+            "homepage": ""
+        }
+    ]
+}

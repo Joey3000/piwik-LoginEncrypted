@@ -1,0 +1,14 @@
+{
+    "LoginEncrypted": {
+        "DecryptionError": "Decryption error. This may occur after installation of the LoginEncrypted plugin or change of its encryption keys. Please clear the browser cache and reload the login page. That is necessary to make the browser download the latest JavaScript file containing the new public key. Note: You may also encounter decryption error WARNINGs (one per failed login) in your dashboard on the next successful login. They will refer to this pre-login decryption errors and can be safely closed and ignored. Please see the LoginEnabled plugin website for further information.",
+        "SettingsIntroduction": "This plugin will encrypt users' passwords when transmitted from browser to the Piwik server on login or password change. The RSA public-key cryptosystem with the PKCS#1 padding scheme is used for that.",
+        "SettingsPublicKeyTitle": "Public Key (exponent e, modulus n)",
+        "SettingsPublicKeyDescription": "Currently used public key, generated on ",
+        "SettingsKeyLengthTitle": "Key Length",
+        "SettingsKeyLengthDescription": "Length in bits of the current keys. Can be changed for generation of new keys.",
+        "SettingsKeyLengthInlineHelp": "Enter a number which is >= ",
+        "SettingsKeyLengthInvalid": "Value is invalid",
+        "SettingsGenerateKeysTitle": "Generate new keys",
+        "SettingsGenerateKeysDescription": "If enabled, new keys will be generated on the next Save button click"
+    }
+}
