@@ -14,6 +14,7 @@ The plugin integrates following cryptographic packages:
   * Client side, for password encryption (JavaScript): [jsbn](http://www-cs-students.stanford.edu/~tjw/jsbn/), version 1.4
 
 __Important Notes__
+  * If [installing](https://piwik.org/faq/plugins/#faq_21) the plugin using a ZIP file or manually via the FTP file upload, please download the plugin from the [Piwik Plugins Marketplace](https://plugins.piwik.org/LoginEncrypted), NOT from its Github releases here. The Marketplace picks up the Github releases automatically and converts them into a form usable with Piwik (e.g. correct naming of the plugin folder, removal of possibly negatively impacting files, such as .gitignore, etc.).
   * Encryption of passwords on their changes in Piwik settings with the user already logged in, i.e., (a) on change of one's own password by current user or (b) on change of other users' passwords by the super user is (currently) not supported.
   * Password auto-completion on login would not work, because the encrypted password would be filled in, which then would be encrypted again, resulting in incorrect password submission. So, the auto-completion is turned off by client side JS on login page load. (But its effectiveness may depend on the browser used.)
   * This plugin is not meant to be a replacement for usage of HTTPS with Piwik. It is meant only for Piwik installations where, for whatever reason, usage of HTTPS is impossible. If HTTPS is possible - it should be used instead, as it is much better and this plugin will not be necessary. This plugin encrypts sent passwords, which is useful e.g. on open public wireless networks, but cannot prevent active [Man-in-the-Middle attacks](https://en.wikipedia.org/wiki/Man-in-the-middle_attack), where an attacker can alter the communication between the user and Piwik just-in-time. E.g., a user's session can still be hijacked while the user is logged in, as it will still be transmitted in clear text. So, logging out of Piwik after having finished using it will still be necessary. This plugin is only meant to protect a passive communication listener/logger from retrospectively learning the Piwik password looking at the logs.
@@ -41,8 +42,6 @@ __I get one or several "/plugins/LoginEncrypted/phpseclib/Crypt/RSA.php(...): Us
 
 They can be safely closed and ignored. They appear after the pre-login decryption errors described in the above point. Please note that they not necessarily refer to decryption errors on your own login or password change attempts, but to ones having occurred with any Piwik user before you logged in.
 
-## Troubleshooting
-
 __There is no way for me to log in. What do I do?__
 
 Disable JavaScript in the browser and reload the login page. You will then be able to log in the standard way, without password encryption. Then, if you wish as Piwik super user, you can deactivate the plugin in Piwik administration.
@@ -61,4 +60,4 @@ That will disable the LoginEncrypted plugin and enable the original Piwik Login 
 
 ## Support
 
-Please direct questions and feedback to http://forum.piwik.org/read.php?9,129164. Issues can be reported at https://github.com/Joey3000/piwik-LoginEncrypted/issues.
+Please direct questions and feedback to [http://forum.piwik.org/read.php?9,129164](http://forum.piwik.org/read.php?9,129164). Issues can be reported at [https://github.com/Joey3000/piwik-LoginEncrypted/issues](https://github.com/Joey3000/piwik-LoginEncrypted/issues).
