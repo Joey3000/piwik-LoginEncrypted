@@ -26,7 +26,7 @@ See [CHANGELOG.md](https://github.com/Joey3000/piwik-LoginEncrypted/blob/master/
 
 __How can I see that the password encryption is active?__
 
-As visual feedback, one will see the password switch to a much larger length upon a click on the "Sign in" button. (If one enters a password shorter than the password field that is.)
+As visual feedback, one will, on some browsers, see the password switch to a much larger length upon a click on the "Sign in" button. (If one enters a password shorter than the password field that is.) Whether one can see that depends on the browser used, though.
 
 __What is the maximum usable key length?__
 
@@ -57,4 +57,4 @@ That will disable the LoginEncrypted plugin and enable the original core Login p
 
 ## Support
 
-Please direct any feedback to ...
+Please direct questions and feedback to http://forum.piwik.org/read.php?9,129164. Issues can be reported at https://github.com/Joey3000/piwik-LoginEncrypted/issues.
