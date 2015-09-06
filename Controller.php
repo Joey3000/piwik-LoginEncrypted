@@ -55,7 +55,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
      *
      * @param string $messageNoAccess Access error message
      * @param bool $infoMessage
-     * @return string
+     * @return The return of the parent class function
      */
     public function login($messageNoAccess = null, $infoMessage = false)
     {
@@ -63,20 +63,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
         // check if "encrypted" flag is set
         if (Common::getRequestVar('form_encrypted', 'false', 'string') == 'true') {
-            // check if a password was submitted
-            $password = $form->getSubmitValue('form_password');
-            if($password !== null) {
-                // decrypt and replace password
-                // Note: Operating on _POST directly, as there doesn't seem to be another way. E.g., if
-                //       value is replaced as in https://pear.php.net/manual/en/package.html.html-quickform2.qf-migration.php
-                //       (using array_unshift()), it would not persist, as a "new" object instance will.
-                //       re-read the sources (i.e. _POST).
-                $password = Crypto::decrypt($password);
-                if ($password === Crypto::DECRYPTION_FAILED) {
-                    throw new Exception(Piwik::translate('LoginEncrypted_DecryptionError'));
-                }
-                $_POST['form_password'] = $password;
-            }
+            $this->decryptPassword($form, 'form_password');
         }
 
         // call the original function on the decrypted values
@@ -105,7 +92,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
      * Reset password action. Decrypts received password values and then calls
      * the original (parent class) function for regular processing.
      *
-     * @param none
+     * @return The return of the parent class function
      */
     public function resetPassword()
     {
@@ -113,31 +100,8 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
         // check if "encrypted" flag is set
         if (Common::getRequestVar('form_encrypted', 'false', 'string') == 'true') {
-            // check if a password was submitted
-            $password = $form->getSubmitValue('form_password');
-            if($password !== null) {
-                // decrypt and replace password
-                // Note: Operating on _POST directly, as there doesn't seem to be another way. E.g., if
-                //       value is replaced as in https://pear.php.net/manual/en/package.html.html-quickform2.qf-migration.php
-                //       (using array_unshift()), it would not persist, as a "new" object instance will.
-                //       re-read the sources (i.e. _POST).
-                $password = Crypto::decrypt($password);
-                if ($password === Crypto::DECRYPTION_FAILED) {
-                    throw new Exception(Piwik::translate('LoginEncrypted_DecryptionError'));
-                }
-                $_POST['form_password'] = $password;
-            }
-
-            // check if a password confirmation was submitted
-            $passwordBis = $form->getSubmitValue('form_password_bis');
-            if($passwordBis !== null) {
-                // decrypt and replace password confirmation
-                $passwordBis = Crypto::decrypt($passwordBis);
-                if ($passwordBis === Crypto::DECRYPTION_FAILED) {
-                    throw new Exception(Piwik::translate('LoginEncrypted_DecryptionError'));
-                }
-                $_POST['form_password_bis'] = $passwordBis;
-            }
+            $this->decryptPassword($form, 'form_password');
+            $this->decryptPassword($form, 'form_password_bis');
         }
 
         // call the original function on the decrypted values
@@ -167,5 +131,35 @@ class Controller extends \Piwik\Plugins\Login\Controller
         }
 
         return null;
+    }
+
+    /**
+     * Gets the password from the HTML form, decrypts it and writes the decrypted
+     * value back into the _POST request.
+     * Note: Writing to _POST directly, as there doesn't seem to be another way. E.g., if
+     *       value is replaced as in https://pear.php.net/manual/en/package.html.html-quickform2.qf-migration.php
+     *       (using array_unshift()), it would not persist, as a "new" object instance
+     *       will re-read its sources (i.e. _POST).
+     *
+     * @param QuickForm2 $form The HTML form which the password is part of
+     * @param string The input ID of the password field on the HTML form
+     * @throws Exception If decryption fails.
+     */
+    protected function decryptPassword($form, $passwordInputId)
+    {
+        $password = $form->getSubmitValue($passwordInputId);
+
+        // check if a password was submitted
+        // Note: Compare loosely, so both, "" (password input empty; forms send strings)
+        //       and NULL (password input not sent - see QuickForm2->getSubmitValue())
+        //       are covered - see https://secure.php.net/manual/en/types.comparisons.php
+        if($password != "") {
+            // decrypt and replace password
+            $password = Crypto::decrypt($password);
+            if ($password === Crypto::DECRYPTION_FAILED) {
+                throw new Exception(Piwik::translate('LoginEncrypted_DecryptionError'));
+            }
+            $_POST[$passwordInputId] = $password;
+        }
     }
 }

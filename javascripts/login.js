@@ -46,10 +46,13 @@
             var passwordInputId = '#' + formId + '_password';
             var rsa = new RSAKey();
             rsa.setPublic(LoginEncrypted_PublicKey.n, LoginEncrypted_PublicKey.e);
-            $(passwordInputId).val(rsa.encrypt($(passwordInputId).val()));
+            // don't encrypt an empty field, as it may cause a decryption issue server-side
+            if ($(passwordInputId).val() !== '') {
+                $(passwordInputId).val(rsa.encrypt($(passwordInputId).val()));
+            }
 
-            // encrypt password confirmation field, if provided
-            if (passwordConfirmInputId) {
+            // encrypt password confirmation field, if provided as argument and is not empty
+            if (passwordConfirmInputId && ($('#' + passwordConfirmInputId).val() !== '')) {
                 $('#' + passwordConfirmInputId).val(rsa.encrypt($('#' + passwordConfirmInputId).val()));
             }
 
