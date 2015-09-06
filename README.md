@@ -14,6 +14,7 @@ The plugin integrates following cryptographic packages:
   * Client side, for password encryption (JavaScript): [jsbn](http://www-cs-students.stanford.edu/~tjw/jsbn/), version 1.4
 
 __Important Notes__
+
   * If [installing](https://piwik.org/faq/plugins/#faq_21) the plugin using a ZIP file or manually via the FTP file upload, please download the plugin from the [Piwik Plugins Marketplace](https://plugins.piwik.org/LoginEncrypted), NOT from its Github releases here. The Marketplace picks up the Github releases automatically and converts them into a form usable with Piwik (e.g. correct naming of the plugin folder, removal of possibly negatively impacting files, such as .gitignore, etc.).
   * Encryption of passwords on their changes in Piwik settings with the user already logged in, i.e., (a) on change of one's own password by current user or (b) on change of other users' passwords by the super user is (currently) not supported.
   * Password auto-completion on login would not work, because the encrypted password would be filled in, which then would be encrypted again, resulting in incorrect password submission. So, the auto-completion is turned off by client side JS on login page load. (But its effectiveness may depend on the browser used.)
