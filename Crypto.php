@@ -101,7 +101,7 @@ class Crypto
     /**
      * Creates DB table for private key storage, if it does not exist yet.
      *
-     * @throws \Exception If there is an error in the SQL.
+     * @throws Exception If there is an error in the SQL.
      */
     protected static function createPrivateKeyTable()
     {
@@ -127,7 +127,7 @@ class Crypto
     /**
      * Deletes the DB table for private key storage, if exists.
      *
-     * @throws \Exception If there is an error in the SQL.
+     * @throws Exception If there is an error in the SQL.
      */
     public static function deletePrivateKeyTable()
     {
