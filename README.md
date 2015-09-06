@@ -50,10 +50,14 @@ Disable JavaScript in the browser and reload the login page. You will then be ab
 __Nothing works. And I can't login to deactivate the plugin. What do I do?__
 
 Connect to your Piwik installation using FTP. Then in the /config/config.ini.php file change the
-´Plugins[] = "LoginEncrypted"´
+
+`Plugins[] = "LoginEncrypted"`
+
 line to
-´Plugins[] = "Login"´
-That will disable the LoginEncrypted plugin and enable the original core Login plugin instead. After having done that, clear your browser cache and reload the login page. You will then be able to log in the standard way, without password encryption. And if you wish as Piwik super user, you can then uninstall the plugin in Piwik administration.
+
+`Plugins[] = "Login"`
+
+That will disable the LoginEncrypted plugin and enable the original Piwik Login plugin instead. After having done that, clear your browser cache and reload the login page. You will then be able to log in the standard way, without password encryption. And if you wish as Piwik super user, you can then uninstall the plugin in Piwik administration.
 
 ## Support
 
