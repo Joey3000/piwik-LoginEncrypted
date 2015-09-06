@@ -19,10 +19,6 @@ __Important Notes__
   * Password auto-completion on login would not work, because the encrypted password would be filled in, which then would be encrypted again, resulting in incorrect password submission. So, the auto-completion is turned off by client side JS on login page load. (But its effectiveness may depend on the browser used.)
   * This plugin is not meant to be a replacement for usage of HTTPS with Piwik. It is meant only for Piwik installations where, for whatever reason, usage of HTTPS is impossible. If HTTPS is possible - it should be used instead, as it is much better and this plugin will not be necessary. This plugin encrypts sent passwords, which is useful e.g. on open public wireless networks, but cannot prevent active [Man-in-the-Middle attacks](https://en.wikipedia.org/wiki/Man-in-the-middle_attack), where an attacker can alter the communication between the user and Piwik just-in-time. E.g., a user's session can still be hijacked while the user is logged in, as it will still be transmitted in clear text. So, logging out of Piwik after having finished using it will still be necessary. This plugin is only meant to protect a passive communication listener/logger from retrospectively learning the Piwik password looking at the logs.
 
-## Changelog
-
-See [CHANGELOG.md](https://github.com/Joey3000/piwik-LoginEncrypted/blob/master/CHANGELOG.md).
-
 ## FAQ
 
 __How can I see that the password encryption is active?__
@@ -31,7 +27,7 @@ As visual feedback, one will, on some browsers, see the password switch to a muc
 
 __What is the maximum usable key length?__
 
-It depends on the integrated cryptographic packages listed above, first and foremost on phpseclib on the server side. As well as used server hardware, PHP version and configuration (e.g. if bcmath or gmp extensions are installed, otherwise the pure-PHP implementation will be used). This plugin is completely transparent as far as that is concerned. If the key is set too long - it will not be generated (the generation will just "hang", until the plugin settings page is reloaded by the user). Around the same size, even if generation succeeds, it is possible that password decryption on a subsequent login will run into the Piwik-enforced execution timeout of 30 seconds, causing the login to fail. (See the "Troubleshooting" section below on what to do in such a case.) But a key length of 4096 bits should be safe to use for anybody, and is [enough for the foreseeable future](https://en.wikipedia.org/wiki/RSA_%28cryptosystem%29#Integer_factorization_and_RSA_problem). Also, if one is concerned about actors being able to break a longer key than that, they should switch to properly implemented HTTPS.
+It depends on the integrated cryptographic packages listed above, first and foremost on phpseclib on the server side. As well as used server hardware, PHP version and configuration (e.g. if bcmath or gmp extensions are installed, otherwise the pure-PHP implementation will be used). This plugin is completely transparent as far as that is concerned. If the key is set too long - it will not be generated (the generation will just "hang", until the plugin settings page is reloaded by the user). Around the same size, even if generation succeeds, it is possible that password decryption on a subsequent login will run into the Piwik-enforced execution timeout of 30 seconds, causing the login to fail. (See the FAQ sections below on what to do in such a case.) But a key length of 4096 bits should be safe to use for anybody, and is [enough for the foreseeable future](https://en.wikipedia.org/wiki/RSA_%28cryptosystem%29#Integer_factorization_and_RSA_problem). Also, if one is concerned about actors being able to break a longer key than that, they should switch to properly implemented HTTPS.
 
 __I get a "Decryption error" shown when trying to log in. What does it mean?__
 
@@ -57,6 +53,10 @@ line to
 `Plugins[] = "Login"`
 
 That will disable the LoginEncrypted plugin and enable the original Piwik Login plugin instead. After having done that, clear your browser cache and reload the login page. You will then be able to log in the standard way, without password encryption. And if you wish as Piwik super user, you can then uninstall the plugin in Piwik administration.
+
+## Changelog
+
+See [CHANGELOG.md](https://github.com/Joey3000/piwik-LoginEncrypted/blob/master/CHANGELOG.md).
 
 ## Support
 
