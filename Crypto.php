@@ -75,7 +75,7 @@ class Crypto
      *
      * @param int $keylength Desired key length in bits
      * @return array The public key as an associative array containing its exponent "e"
-                     and modulus "n" in hexadecimal representation.
+     *               and modulus "n" in hexadecimal representation.
      */
     public static function generateKeys($keylength)
     {
