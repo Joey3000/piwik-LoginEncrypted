@@ -1,7 +1,11 @@
 /*!
- * Piwik - free/libre analytics platform
+ * LoginEncrypted plugin for Piwik, the free/libre analytics platform
  *
- * @link http://piwik.org
+ * This file is a take-over of the equally named file of the Piwik core
+ * Login plugin, modified for the needs of this plugin.
+ *
+ * @author  Joey3000 https://github.com/Joey3000
+ * @link    https://github.com/Joey3000/piwik-LoginEncrypted
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
 (function ($) {
