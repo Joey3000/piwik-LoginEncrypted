@@ -29,6 +29,7 @@ As visual feedback, one will, on some browsers, see the password switch to a muc
 __How often do the encryption keys need to be changed?__
 
 They don't normally need to be changed for a few years. The reason is that the private key, which is used for decryption, never leavers the server - it is never sent to the browser. While the public key, which is sent to the browser, is just that - public. Any one can know it, but can use it for encryption only, not for decryption. That is the base of [asymmetric cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography). And the PKCS#1 padding scheme hardens against offline password bruteforcing - i.e. trying to encrypt various passwords, comparing them to the known encrypted result - by making the encrypted result change on every encryption. Situations when a keys change is needed are:
+
   * When the private key gets compromised (e.g. by an unauthorized access to the Piwik database)
   * When advances in cryptography show that current key length is not sufficient and a longer key is needed
   * When an issue is discovered in encryption software implementation, requiring its update (and therefore new keys, since the issue could have led to key compromise)
@@ -48,7 +49,10 @@ __I get a "Decryption error" shown when trying to log in. What does it mean?__
 
 As the text accompanying the error states, that may occur after installation of the LoginEncrypted plugin or change of its encryption keys. As the text also says, please clear the browser cache and reload the login page. That is necessary to make the browser download the latest JavaScript file containing the new public key. See following issue report for information: [https://github.com/piwik/piwik/issues/8713](https://github.com/piwik/piwik/issues/8713).
 
-Note: Alternatively to the browser cache cleaning, a forced reload (i.e., re-download of all locally cached files) of the login page would work es well. How it can be done, depends on the browser used. E.g., on Firefox: hold down the Shift key while clicking on the "Reload" arrow.
+Notes:
+
+  * Alternatively to the browser cache cleaning, a forced reload (i.e., re-download of all locally cached files) of the login page would work es well. How it can be done, depends on the browser used. E.g., on Firefox: hold down the Shift key while clicking on the "Reload" arrow.
+  * **A workaround for the above issue has been implemented in the plugin version 1.0.2. So that this error should not appear any longer.**
 
 __I get one or several "/plugins/LoginEncrypted/phpseclib/Crypt/RSA.php(...): User Notice - Decryption error" warnings in the Piwik dashboard after having logged in. What do they mean?__
 
