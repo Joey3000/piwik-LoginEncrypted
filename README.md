@@ -29,10 +29,10 @@ As visual feedback, one will, on some browsers, see the password switch to a muc
 __How often do the encryption keys need to be changed?__
 
 They don't normally need to be changed for a few years. The reason is that the private key, which is used for decryption, never leavers the server - it is never sent to the browser. While the public key, which is sent to the browser, is just that - public. Any one can know it, but can use it for encryption only, not for decryption. That is the base of [asymmetric cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography). And the PKCS#1 padding scheme hardens against offline password bruteforcing - i.e. trying to encrypt various passwords, comparing them to the known encrypted result - by making the encrypted result change on every encryption. Situations when a keys change is needed are:
-(a) When the private key gets compromised (e.g. by an unauthorized access to the Piwik database)
-(b) When advances in cryptography show that current key length is not sufficient and a longer key is needed
-(c) When an issue is discovered in encryption software implementation, requiring its update (and therefore new keys, since the issue could have led to key compromise)
-(d) After a longer while, just to be sure that none of the above has occurred unnoticed
+  * When the private key gets compromised (e.g. by an unauthorized access to the Piwik database)
+  * When advances in cryptography show that current key length is not sufficient and a longer key is needed
+  * When an issue is discovered in encryption software implementation, requiring its update (and therefore new keys, since the issue could have led to key compromise)
+  * After a longer while, just in case any of the above has occurred unnoticed
 
 __What is the reason for the chosen default key length in the plugin?__
 
@@ -41,7 +41,8 @@ It is one that is not too resource-demanding (see next point), while still consi
 __What is the maximum usable key length?__
 
 It depends on the integrated cryptographic packages listed above, first and foremost on phpseclib on the server side. As well as used server hardware, PHP version and configuration (e.g. if bcmath or gmp extensions are installed, otherwise a pure-PHP implementation will be used by phpseclib). This plugin is completely transparent as far as that is concerned. If the key is set too long - it will not be generated (the generation will just "hang", until the plugin settings page is reloaded by the user). Around the same size, even if generation succeeds, it is possible that password decryption on a subsequent login will run into the Piwik-enforced execution timeout of 30 seconds, causing the login to fail. (See the FAQ points below on what to do in such a case.) But a key length of 4096 bits should be safe to use for anybody, and is [enough for the foreseeable future](https://en.wikipedia.org/wiki/RSA_%28cryptosystem%29#Integer_factorization_and_RSA_problem). Also, if one is concerned about actors being able to break a longer key than that, they should switch to properly implemented HTTPS.
-RSA gets too resource-demanding with longer keys, so that instead of increasing its key size, a move to a more modern asymmetric cryptosystem (e.g. [ECC](https://en.wikipedia.org/wiki/Elliptic_curve_cryptography)) would be better in future.
+
+Additionally: RSA gets too resource-demanding with longer keys, so that instead of increasing its key size, a move to a more modern asymmetric cryptosystem (e.g. [ECC](https://en.wikipedia.org/wiki/Elliptic_curve_cryptography)) would be better in future.
 
 __I get a "Decryption error" shown when trying to log in. What does it mean?__
 
