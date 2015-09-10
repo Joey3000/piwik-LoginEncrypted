@@ -22,7 +22,9 @@ class LoginEncrypted extends \Piwik\Plugins\Login\Login
         $jsFiles[] = "plugins/LoginEncrypted/javascripts/jsbn/prng4.js";
         $jsFiles[] = "plugins/LoginEncrypted/javascripts/jsbn/rng.js";
         $jsFiles[] = "plugins/LoginEncrypted/javascripts/jsbn/rsa.js";
-        $jsFiles[] = "plugins/LoginEncrypted" . Crypto::PUBLIC_KEY_JS_FILE;
+        // Following file will be loaded from within login.js, as a workaround
+        // for https://github.com/piwik/piwik/issues/8713
+        //$jsFiles[] = "plugins/LoginEncrypted" . Crypto::PUBLIC_KEY_JS_FILE;
         $jsFiles[] = "plugins/LoginEncrypted/javascripts/login.js";
     }
 

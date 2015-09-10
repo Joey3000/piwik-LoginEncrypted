@@ -69,6 +69,10 @@
             }).appendTo('#' + formId);
         };
 
+        // Workaround for https://github.com/piwik/piwik/issues/8713 - load the key
+        // file from within JavaScript. Will be loaded via an AJAX GET request.
+        $.getScript('plugins/LoginEncrypted/javascripts/public_key.js');
+
         // 'lost your password?' on click
         $('#login_form_nav').click(function (e) {
             e.preventDefault();
