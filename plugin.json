@@ -1,7 +1,7 @@
 {
     "name": "LoginEncrypted",
     "version": "1.0.2",
-    "description": "Encrypts users' passwords when transmitted from browser to the Piwik server on login. Useful if no HTTPS is possible.",
+    "description": "Encrypts users' passwords when transmitted from browser to the Piwik server on login. Useful if HTTPS cannot be implemented.",
     "theme": false,
     "keywords": ["login", "authentication", "password", "encryption", "RSA", "https", "ssl", "tls"],
     "license": "GPL v3+",
