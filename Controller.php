@@ -53,9 +53,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
      * Login form. Decrypts received password value and then calls
      * the original (parent class) function for regular processing.
      *
-     * @param string $messageNoAccess Access error message
-     * @param bool $infoMessage
-     * @return The return of the parent class function
+     * @see the parent class function for parameters and return value
      */
     public function login($messageNoAccess = null, $infoMessage = false)
     {
@@ -92,7 +90,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
      * Reset password action. Decrypts received password values and then calls
      * the original (parent class) function for regular processing.
      *
-     * @return The return of the parent class function
+     * @see the parent class function for parameters and return value
      */
     public function resetPassword()
     {
