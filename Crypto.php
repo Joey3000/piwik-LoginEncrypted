@@ -67,7 +67,14 @@ class Crypto
         $rsa->loadKey(static::getPrivateKey());
         $s = new BigInteger($ciphertext, 16);
 
-        return $rsa->decrypt($s->toBytes());
+        // prevent library error output appearing in the dashboard
+        set_error_handler(function() { /* ignore errors */ });
+
+        $cleartext = $rsa->decrypt($s->toBytes());
+
+        restore_error_handler();
+
+        return $cleartext;
     }
 
     /**
