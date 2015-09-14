@@ -8,6 +8,17 @@
  * @link    https://github.com/Joey3000/piwik-LoginEncrypted
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
+function loginEncrypted_Encrypt(text) {
+    var rsa = new RSAKey();
+    rsa.setPublic(loginEncrypted_PublicKey.n, loginEncrypted_PublicKey.e);
+    // don't encrypt an empty text, as it may cause a decryption issue server-side
+    if (text !== '') {
+        text = rsa.encrypt(text);
+    }
+    return text;
+};
+
 (function ($) {
 
     $(function() {
@@ -48,16 +59,11 @@
         var encryptPassword = function (formId, passwordConfirmInputId) {
             // ecrypt password field
             var passwordInputId = '#' + formId + '_password';
-            var rsa = new RSAKey();
-            rsa.setPublic(LoginEncrypted_PublicKey.n, LoginEncrypted_PublicKey.e);
-            // don't encrypt an empty field, as it may cause a decryption issue server-side
-            if ($(passwordInputId).val() !== '') {
-                $(passwordInputId).val(rsa.encrypt($(passwordInputId).val()));
-            }
+            $(passwordInputId).val(loginEncrypted_Encrypt($(passwordInputId).val()));
 
-            // encrypt password confirmation field, if provided as argument and is not empty
-            if (passwordConfirmInputId && ($('#' + passwordConfirmInputId).val() !== '')) {
-                $('#' + passwordConfirmInputId).val(rsa.encrypt($('#' + passwordConfirmInputId).val()));
+            // encrypt password confirmation field, if provided as argument
+            if (passwordConfirmInputId) {
+                $('#' + passwordConfirmInputId).val(loginEncrypted_Encrypt($('#' + passwordConfirmInputId).val()));
             }
 
             // set encryption flag
@@ -68,6 +74,9 @@
                 value: 'true'
             }).appendTo('#' + formId);
         };
+
+        // disable password autocomplete, to prevent previously encrypted passwords being autocompleted instead of clear text ones
+        $('#login_form_password').attr('autocomplete', 'off');
 
         // Workaround for https://github.com/piwik/piwik/issues/8713 - load the key
         // file from within JavaScript. Will be loaded via an AJAX GET request.
@@ -137,9 +146,6 @@
 
             return true; // do not block submission
         });
-
-        // disable password autocomplete, to prevent previously encrypted passwords being autocompleted instead of clear text ones
-        $('#login_form_password').attr('autocomplete', 'off');
 
         $('#login_form_login').focus();
     });

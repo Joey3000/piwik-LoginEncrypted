@@ -67,7 +67,14 @@ class Crypto
         $rsa->loadKey(static::getPrivateKey());
         $s = new BigInteger($ciphertext, 16);
 
-        return $rsa->decrypt($s->toBytes());
+        // prevent library error output appearing in the dashboard
+        set_error_handler(function() { /* ignore errors */ });
+
+        $cleartext = $rsa->decrypt($s->toBytes());
+
+        restore_error_handler();
+
+        return $cleartext;
     }
 
     /**
@@ -168,7 +175,7 @@ class Crypto
     protected static function writePublicKeyJS($key)
     {
         // write the key to the file
-        $content = 'var LoginEncrypted_PublicKey = {e:\'' . $key['e'] . '\', n:\'' . $key['n'] . '\'};';
+        $content = 'var loginEncrypted_PublicKey = {e:\'' . $key['e'] . '\', n:\'' . $key['n'] . '\'};';
         file_put_contents(__DIR__ . static::PUBLIC_KEY_JS_FILE, $content);
 
         // remove merged piwik JS file, to force its re-generation including the newly written file

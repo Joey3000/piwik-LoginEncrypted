@@ -45,19 +45,6 @@ It depends on the integrated cryptographic packages listed above, first and fore
 
 Additionally: RSA gets too resource-demanding with longer keys, so that instead of increasing its key size, a move to a more modern asymmetric cryptosystem (e.g. [ECC](https://en.wikipedia.org/wiki/Elliptic_curve_cryptography)) would be better in future.
 
-__I get a "Decryption error" shown when trying to log in. What does it mean?__
-
-As the text accompanying the error states, that may occur after installation of the LoginEncrypted plugin or change of its encryption keys. As the text also says, please clear the browser cache and reload the login page. That is necessary to make the browser download the latest JavaScript file containing the new public key. See following issue report for information: [https://github.com/piwik/piwik/issues/8713](https://github.com/piwik/piwik/issues/8713).
-
-Notes:
-
-  * Alternatively to the browser cache cleaning, a forced reload (i.e., re-download of all locally cached files) of the login page would work es well. How it can be done, depends on the browser used. E.g., on Firefox: hold down the Shift key while clicking on the "Reload" arrow.
-  * **A workaround for the above issue has been implemented in the plugin version 1.0.2. So that this error should not appear any longer.**
-
-__I get one or several "/plugins/LoginEncrypted/phpseclib/Crypt/RSA.php(...): User Notice - Decryption error" warnings in the Piwik dashboard after having logged in. What do they mean?__
-
-They can be safely closed and ignored. They repeat to the logged-in user the pre-login decryption errors described in the above point (one warning per previous decryption error). Please note that they not necessarily refer to decryption errors on your own login or password change attempts, but to ones having occurred with any Piwik user before you logged in.
-
 __There is no way for me to log in. What do I do?__
 
 Disable JavaScript in the browser and reload the login page. You will then be able to log in the standard way, without password encryption. After having logged in, you can enable JavaScript again. Then, if you wish as Piwik super user, you can deactivate and uninstall the plugin in Piwik administration.

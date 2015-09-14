@@ -61,7 +61,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
         // check if "encrypted" flag is set
         if (Common::getRequestVar('form_encrypted', 'false', 'string') == 'true') {
-            $this->decryptPassword($form, 'form_password');
+            $this->decryptFormPassword($form, 'form_password');
         }
 
         // call the original function on the decrypted values
@@ -98,8 +98,8 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
         // check if "encrypted" flag is set
         if (Common::getRequestVar('form_encrypted', 'false', 'string') == 'true') {
-            $this->decryptPassword($form, 'form_password');
-            $this->decryptPassword($form, 'form_password_bis');
+            $this->decryptFormPassword($form, 'form_password');
+            $this->decryptFormPassword($form, 'form_password_bis');
         }
 
         // call the original function on the decrypted values
@@ -140,24 +140,69 @@ class Controller extends \Piwik\Plugins\Login\Controller
      *       will re-read its sources (i.e. _POST).
      *
      * @param QuickForm2 $form The HTML form which the password is part of
-     * @param string The input ID of the password field on the HTML form
-     * @throws Exception If decryption fails.
+     * @param string $passwordInputId The input ID of the password field on the HTML form
      */
-    protected function decryptPassword($form, $passwordInputId)
+    protected function decryptFormPassword($form, $passwordInputId)
     {
         $password = $form->getSubmitValue($passwordInputId);
+        $password = static::decryptPassword($password);
 
-        // check if a password was submitted
+        // write out if a password was submitted
         // Note: Compare loosely, so both, "" (password input empty; forms send strings)
         //       and NULL (password input not sent - see QuickForm2->getSubmitValue())
         //       are covered - see https://secure.php.net/manual/en/types.comparisons.php
         if($password != "") {
-            // decrypt and replace password
-            $password = Crypto::decrypt($password);
-            if ($password === Crypto::DECRYPTION_FAILED) {
-                throw new Exception(Piwik::translate('LoginEncrypted_DecryptionError'));
-            }
             $_POST[$passwordInputId] = $password;
         }
+    }
+
+    /**
+     * Decrypts the provided password.
+     *
+     * @param string $password Password to decrypt
+     * @throws Exception if decryption fails
+     * @return string Decrypted password
+     */
+    public static function decryptPassword($password)
+    {
+        // check if a password was submitted
+        // Note: Compare loosely, so both, "" (password input empty; forms send strings)
+        //       and "password input not sent" are covered - see
+        //       https://secure.php.net/manual/en/types.comparisons.php
+        if($password != "") {
+            $password = Crypto::decrypt($password);
+            if ($password === Crypto::DECRYPTION_FAILED) {
+                throw new Exception(Piwik::translate('LoginEncrypted_DecryptionError') .
+                                    ' (Occurred in: ' . static::getBacktrace() . ')'
+                                   );
+            }
+        }
+        return $password;
+    }
+
+    /**
+    * Getting backtrace - adapted from https://secure.php.net/manual/en/function.debug-backtrace.php#111355
+    *
+    * @param int $maximum Ignore calls above this number
+    *
+    * @return string
+    */
+    protected static function getBacktrace($maximum = 4)
+    {
+        $trace = '';
+        foreach (debug_backtrace() as $k => $v) {
+            if ($k > $maximum) {
+                continue;
+            }
+
+            // prevent user notices about array conversion to string (on implode()) appearing
+            set_error_handler(function() { /* ignore errors */ });
+
+            $trace .= '#' . $k . ' ' . $v['file'] . '(' . (isset($v['line']) ? $v['line'] : '') . '): ' . (isset($v['class']) ? $v['class'] . '->' : '') . $v['function'] . '(' . implode(', ', $v['args']) . ')' . " || ";
+
+            restore_error_handler();
+        }
+
+        return $trace;
     }
 }
