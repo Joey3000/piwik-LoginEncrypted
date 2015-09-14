@@ -173,7 +173,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
             $password = Crypto::decrypt($password);
             if ($password === Crypto::DECRYPTION_FAILED) {
                 throw new Exception(Piwik::translate('LoginEncrypted_DecryptionError') .
-                                    ' (Occurred in: ' . static::getBacktrace() . ')'
+                                    ' (Backtrace: ' . static::getBacktrace() . ')'
                                    );
             }
         }
