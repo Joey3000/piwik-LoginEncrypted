@@ -76,6 +76,11 @@ class LoginEncrypted extends \Piwik\Plugins\Login\Login
         if (Manager::getInstance()->isPluginActivated("Login") == false) {
             Manager::getInstance()->activatePlugin("Login");
         }
+
+        // deactivate the UsersManagerEncrypted plugin, as it requires this plugin
+        if (Manager::getInstance()->isPluginActivated("UsersManagerEncrypted") == true) {
+            Manager::getInstance()->deactivatePlugin("UsersManagerEncrypted");
+        }
     }
 
     /**

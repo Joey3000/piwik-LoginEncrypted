@@ -1,14 +1,13 @@
 {
     "name": "LoginEncrypted",
-    "version": "1.0.2",
-    "description": "Encrypts users' passwords when transmitted from browser to the Piwik server on login. Useful if HTTPS cannot be implemented.",
+    "version": "2.0.0",
+    "description": "Encrypts users' passwords when transmitted from browser to the Piwik server on login. Useful if HTTPS cannot be implemented.                          The core Login plugin will be automatically deactivated on activation of this plugin, and activated again on deactivation of this plugin. Compatible with UsersManagerEncrypted plugin version >= 0.1.0.",
     "theme": false,
     "keywords": ["login", "authentication", "password", "encryption", "RSA", "https", "ssl", "tls"],
     "license": "GPL v3+",
     "homepage": "https://github.com/Joey3000/piwik-LoginEncrypted",
     "require": {
-        "piwik": ">=2.14.3",
-        "UsersManagerEncrypted": ">=0.1.0"
+        "piwik": ">=2.14.3"
     },
     "authors": [
         {
