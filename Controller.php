@@ -140,8 +140,8 @@ class Controller extends \Piwik\Plugins\Login\Controller
      *       will re-read its sources (i.e. _POST).
      *
      * @param QuickForm2 $form The HTML form which the password is part of
-     * @param string The input ID of the password field on the HTML form
-     * @throws Exception If decryption fails.
+     * @param string $passwordInputId The input ID of the password field on the HTML form
+     * @throws Exception if decryption fails
      */
     protected function decryptPassword($form, $passwordInputId)
     {
