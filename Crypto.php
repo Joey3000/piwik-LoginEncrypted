@@ -18,6 +18,7 @@ use Exception;
 use Piwik\AssetManager;
 use Piwik\Common;
 use Piwik\Db;
+use Piwik\Piwik;
 
 use phpseclib\Crypt\RSA;
 use phpseclib\Math\BigInteger;
@@ -55,26 +56,40 @@ class Crypto
     const DECRYPTION_FAILED = false;
 
     /**
-     * Descrypts encrypted text
+     * Descrypts encrypted text, if provided. Otherwise (false, null, "", etc.)
+     * passes the input value to the output.
      *
-     * @param string $ciphertext Text to decrypt
-     * @return string Decrypted text or DECRYPTION_FAILED in case of failure
+     * @param string $text Text to decrypt
+     * @throws Exception if decryption fails
+     * @return string Decrypted text
      */
-    public static function decrypt($ciphertext)
+    public static function decrypt($text)
     {
-        $rsa = new RSA();
-        $rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
-        $rsa->loadKey(static::getPrivateKey());
-        $s = new BigInteger($ciphertext, 16);
+        // check if a ciphertext was submitted
+        // Note: Compare loosely, so both, "" (password input empty; forms send strings)
+        //       and "password input not sent" are covered - see
+        //       https://secure.php.net/manual/en/types.comparisons.php
+        if ($text != "") {
+            $rsa = new RSA();
+            $rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
+            $rsa->loadKey(static::getPrivateKey());
+            $s = new BigInteger($text, 16);
 
-        // prevent library error output appearing in the dashboard
-        set_error_handler(function() { /* ignore errors */ });
+            // prevent library user notices being shown to the user
+            set_error_handler(function() { /* ignore errors */ });
 
-        $cleartext = $rsa->decrypt($s->toBytes());
+            $text = $rsa->decrypt($s->toBytes());
 
-        restore_error_handler();
+            restore_error_handler();
 
-        return $cleartext;
+            if ($text === Crypto::DECRYPTION_FAILED) {
+                throw new Exception(Piwik::translate('LoginEncrypted_DecryptionError') .
+                                    ' (Backtrace: ' . static::getBacktrace() . ')'
+                                   );
+            }
+        }
+
+        return $text;
     }
 
     /**
@@ -210,5 +225,31 @@ class Crypto
             $keygentime = static::KEY_GENERATION_TIME_UNKNOWN;
         }
         return $keygentime;
+    }
+
+    /**
+    * Getting backtrace - adapted from https://secure.php.net/manual/en/function.debug-backtrace.php#111355
+    *
+    * @param int $maximum Ignore calls above this number
+    *
+    * @return string
+    */
+    protected static function getBacktrace($maximum = 4)
+    {
+        $trace = '';
+        foreach (debug_backtrace() as $k => $v) {
+            if ($k > $maximum) {
+                continue;
+            }
+
+            // prevent user notices about array conversion to string (on implode()) appearing
+            set_error_handler(function() { /* ignore errors */ });
+
+            $trace .= '#' . $k . ' ' . $v['file'] . '(' . (isset($v['line']) ? $v['line'] : '') . '): ' . (isset($v['class']) ? $v['class'] . '->' : '') . $v['function'] . '(' . implode(', ', $v['args']) . ')' . " || ";
+
+            restore_error_handler();
+        }
+
+        return $trace;
     }
 }

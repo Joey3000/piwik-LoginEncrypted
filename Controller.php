@@ -11,13 +11,13 @@ namespace Piwik\Plugins\LoginEncrypted;
 
 use Exception;
 use Piwik\Common;
-use Piwik\Piwik;
 use Piwik\Plugins\Login\FormLogin;
 use Piwik\Plugins\Login\FormResetPassword;
 
 // Following "uses" are needed just for the parent copy-paste functions (see function comments below)
 use Piwik\Log;
 use Piwik\Nonce;
+use Piwik\Piwik;
 
 /**
  * Login controller
@@ -61,7 +61,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
         // check if "encrypted" flag is set
         if (Common::getRequestVar('form_encrypted', 'false', 'string') == 'true') {
-            $this->decryptFormPassword($form, 'form_password');
+            CryptoForm::decryptFormInput($form, 'form_password');
         }
 
         // call the original function on the decrypted values
@@ -98,8 +98,8 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
         // check if "encrypted" flag is set
         if (Common::getRequestVar('form_encrypted', 'false', 'string') == 'true') {
-            $this->decryptFormPassword($form, 'form_password');
-            $this->decryptFormPassword($form, 'form_password_bis');
+            CryptoForm::decryptFormInput($form, 'form_password');
+            CryptoForm::decryptFormInput($form, 'form_password_bis');
         }
 
         // call the original function on the decrypted values
@@ -129,80 +129,5 @@ class Controller extends \Piwik\Plugins\Login\Controller
         }
 
         return null;
-    }
-
-    /**
-     * Gets the password from the HTML form, decrypts it and writes the decrypted
-     * value back into the _POST request.
-     * Note: Writing to _POST directly, as there doesn't seem to be another way. E.g., if
-     *       value is replaced as in https://pear.php.net/manual/en/package.html.html-quickform2.qf-migration.php
-     *       (using array_unshift()), it would not persist, as a "new" object instance
-     *       will re-read its sources (i.e. _POST).
-     *
-     * @param QuickForm2 $form The HTML form which the password is part of
-     * @param string $passwordInputId The input ID of the password field on the HTML form
-     */
-    protected function decryptFormPassword($form, $passwordInputId)
-    {
-        $password = $form->getSubmitValue($passwordInputId);
-        $password = static::decryptPassword($password);
-
-        // write out if a password was submitted
-        // Note: Compare loosely, so both, "" (password input empty; forms send strings)
-        //       and NULL (password input not sent - see QuickForm2->getSubmitValue())
-        //       are covered - see https://secure.php.net/manual/en/types.comparisons.php
-        if($password != "") {
-            $_POST[$passwordInputId] = $password;
-        }
-    }
-
-    /**
-     * Decrypts the provided password.
-     *
-     * @param string $password Password to decrypt
-     * @throws Exception if decryption fails
-     * @return string Decrypted password
-     */
-    public static function decryptPassword($password)
-    {
-        // check if a password was submitted
-        // Note: Compare loosely, so both, "" (password input empty; forms send strings)
-        //       and "password input not sent" are covered - see
-        //       https://secure.php.net/manual/en/types.comparisons.php
-        if($password != "") {
-            $password = Crypto::decrypt($password);
-            if ($password === Crypto::DECRYPTION_FAILED) {
-                throw new Exception(Piwik::translate('LoginEncrypted_DecryptionError') .
-                                    ' (Backtrace: ' . static::getBacktrace() . ')'
-                                   );
-            }
-        }
-        return $password;
-    }
-
-    /**
-    * Getting backtrace - adapted from https://secure.php.net/manual/en/function.debug-backtrace.php#111355
-    *
-    * @param int $maximum Ignore calls above this number
-    *
-    * @return string
-    */
-    protected static function getBacktrace($maximum = 4)
-    {
-        $trace = '';
-        foreach (debug_backtrace() as $k => $v) {
-            if ($k > $maximum) {
-                continue;
-            }
-
-            // prevent user notices about array conversion to string (on implode()) appearing
-            set_error_handler(function() { /* ignore errors */ });
-
-            $trace .= '#' . $k . ' ' . $v['file'] . '(' . (isset($v['line']) ? $v['line'] : '') . '): ' . (isset($v['class']) ? $v['class'] . '->' : '') . $v['function'] . '(' . implode(', ', $v['args']) . ')' . " || ";
-
-            restore_error_handler();
-        }
-
-        return $trace;
     }
 }
