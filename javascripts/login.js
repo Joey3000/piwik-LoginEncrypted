@@ -12,8 +12,8 @@
 function loginEncrypted_Encrypt(text) {
     var rsa = new RSAKey();
     rsa.setPublic(loginEncrypted_PublicKey.n, loginEncrypted_PublicKey.e);
-    // don't encrypt an empty text, as it may cause a decryption issue server-side
-    if (text !== '') {
+    // don't encrypt empty text, see http://www.w3schools.com/js/js_validation.asp
+    if ((text != null) && (text != '')) {
         text = rsa.encrypt(text);
     }
     return text;
