@@ -9,6 +9,7 @@
  */
 namespace Piwik\Plugins\LoginEncrypted;
 
+use Exception;
 use Piwik\Piwik;
 use Piwik\Settings\SystemSetting;
 
@@ -68,7 +69,7 @@ class Settings extends \Piwik\Plugin\Settings
         $this->keyLength->defaultValue  = 2048;
         $this->keyLength->validate = function ($value, $setting) {
             if ($value < static::MINIMUM_KEY_LENGTH) {
-                throw new \Exception(Piwik::translate('LoginEncrypted_SettingsKeyLengthInvalid'));
+                throw new Exception(Piwik::translate('LoginEncrypted_SettingsKeyLengthInvalid'));
             }
         };
 
